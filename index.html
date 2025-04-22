@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Items</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Using Papa Parse for CSV parsing instead of SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Magic Items</h1>
+        
+        <div class="control-panel">
+            <div class="main-actions">
+                <button id="addItemBtn" class="action-button">Add Magic Item</button>
+                <button id="uploadBtn" class="action-button">Upload CSV File</button>
+                <input type="file" id="excelFile" accept=".csv" style="display: none;" />
+                <button id="exportCsvBtn" class="action-button">Export CSV</button>
+            </div>
+            <div id="fileNameDisplay" class="file-status" style="display: none;"> No file selected</div>
+            
+            <div class="loaded-files-container">
+                <h3>Loaded Files:</h3>
+                <ul id="loadedFiles" class="loaded-files-list">
+                    <li class="no-files">No files loaded</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search items...">
+        </div>
+        
+        <div class="filter-sort-container">
+            <select id="categoryFilter" class="filter-select">
+                <option value="">All Regions</option>
+            </select>
+            <select id="sortSelect" class="filter-select">
+                <option value="nameAsc">Sort: Name A-Z</option>
+                <option value="nameDesc">Sort: Name Z-A</option>
+                <option value="regionAsc">Sort: Region A-Z</option>
+                <option value="regionDesc">Sort: Region Z-A</option> <!-- Added Region Z-A -->
+            </select>
+        </div>
+    </header>
+    
+    <main id="itemsContainer">
+        <!-- Items will be displayed here -->
+        <div class="initial-message">Please upload a CSV file containing item data</div>
+    </main>
+    
+    <!-- Item Detail/Edit Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modalContent"></div>
+            <div class="modal-actions">
+                <button id="deleteItemBtn" class="action-button danger">Delete Item</button> <!-- Added Delete Button -->
+                <button id="saveItemChanges" class="action-button">Save Changes</button>
+                <button id="cancelItemChanges" class="action-button secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Item Modal - Updated to match edit modal style -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <span class="add-close-button close-button">&times;</span>
+            <h2 class="modal-title">Add New Item</h2>
+
+            <!-- Changed from form to div structure -->
+            <div id="newItemContainer">
+                <div class="detail-section">
+                    <span class="section-label">Item Name:</span>
+                    <div id="newItemName" class="editable-field" contenteditable="true" data-placeholder="Enter item name..."></div>
+                </div>
+
+                <div class="detail-section">
+                    <span class="section-label">Region:</span>
+                    <div id="newItemRegion" class="editable-field" contenteditable="true" data-placeholder="Enter region..."></div>
+                </div>
+
+                <div class="detail-section">
+                    <span class="section-label">Description:</span>
+                    <div id="newItemDescription" class="editable-field" contenteditable="true" data-placeholder="Enter description..."></div>
+                </div>
+
+                <div class="detail-section">
+                    <span class="section-label">Lore:</span>
+                    <div id="newItemLore" class="editable-field" contenteditable="true" data-placeholder="Enter lore..."></div>
+                </div>
+
+                <div class="detail-section">
+                    <span class="section-label">Image URL:</span>
+                    <div id="newItemImage" class="editable-field" contenteditable="true" data-placeholder="https://example.com/image.jpg"></div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <!-- Changed button type to button, will handle submission via JS -->
+                <button type="button" id="submitAddItem" class="action-button">Add Item</button>
+                <button type="button" id="cancelAddItem" class="action-button secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(csvText => {
                 Papa.parse(csvText, {
                     header: true,
+                    delimiter: ";", // Explicitly set semicolon delimiter
                     skipEmptyLines: true,
                     complete: function(results) {
                         if (results.errors.length > 0) {

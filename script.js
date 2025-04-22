@@ -95,12 +95,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(csvText => {
                 Papa.parse(csvText, {
                     header: true,
-                    delimiter: ";", // Explicitly set semicolon delimiter
                     skipEmptyLines: true,
+                    dynamicTyping: true, // Enable dynamic typing
                     complete: function(results) {
                         if (results.errors.length > 0) {
                             console.error('Base CSV parsing errors:', results.errors);
-                            itemsContainer.innerHTML = `<div class="no-results">Error parsing base items: ${results.errors[0].message}. Please upload a file manually.</div>`;
+                            const errorMsg = results.errors.map(e => `${e.message} (Row: ${e.row})`).join('; ');
+                            itemsContainer.innerHTML = `<div class="no-results">Error parsing base items: ${errorMsg}. Please upload a file manually.</div>`;
                             return;
                         }
 
@@ -293,12 +294,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Papa.parse(file, {
             header: true,
-            delimiter: ";", // Add delimiter parameter
             skipEmptyLines: true,
+            dynamicTyping: true, // Enable dynamic typing
             complete: function(results) {
                 if (results.errors.length > 0) {
                     console.error('CSV parsing errors:', results.errors);
-                    itemsContainer.innerHTML = `<div class="no-results">Error parsing CSV: ${results.errors[0].message}</div>`;
+                    const errorMsg = results.errors.map(e => `${e.message} (Row: ${e.row})`).join('; ');
+                    itemsContainer.innerHTML = `<div class="no-results">Error parsing CSV: ${errorMsg}</div>`;
                     excelFileInput.value = '';
                     return;
                 }
@@ -382,15 +384,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Helper function to get value from row, checking multiple header variations case-insensitively
+    function getHeaderValue(row, possibleHeaders, defaultValue = '') {
+        for (const header of possibleHeaders) {
+            const lowerHeader = header.toLowerCase();
+            for (const key in row) {
+                if (key.trim().toLowerCase() === lowerHeader) {
+                    return row[key] || defaultValue;
+                }
+            }
+        }
+        return defaultValue;
+    }
+
     function processCSVData(csvData, fileId) {
         return csvData.map((row, index) => {
+            const normalizedRow = {};
+            for (const key in row) {
+                normalizedRow[key.trim().toLowerCase()] = row[key];
+            }
+
             return {
                 id: `${fileId}-${index}`,
-                name: row['Item Name'] || row['name'] || 'Unknown Item',
-                region: capitalize(row['Region'] || row['region'] || 'Unknown'),
-                lore: row['Lore'] || row['lore'] || '',
-                descriptionLore: row['DescriptionLore'] || row['descriptionLore'] || '',
-                image: row['ImageURL'] || row['image'] || '',
+                name: getHeaderValue(row, ['Item Name', 'name', 'itemname'], 'Unknown Item'),
+                region: capitalize(getHeaderValue(row, ['Region', 'region'], 'Unknown')),
+                lore: getHeaderValue(row, ['Lore', 'lore']),
+                descriptionLore: getHeaderValue(row, ['Description5e', 'description5e', 'DescriptionLore', 'descriptionlore']),
+                image: getHeaderValue(row, ['ImageURL', 'image', 'imageurl']),
                 fileId: fileId,
                 source: 'csv'
             };
@@ -556,6 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 quotes: true, // Always quote fields
                 quoteChar: '"',
                 escapeChar: '"', // Escape quotes by doubling them
+                newline: "\r\n", // Standard CSV newline
                 encoding: "utf-8"
             });
 

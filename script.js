@@ -106,8 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const fileInfo = {
                             name: baseFileName,
                             id: generateUniqueId(), // Give it a unique ID
-                            count: results.data.length,
-                            isBaseFile: true // Mark as base file
+                            count: results.data.length
                         };
                         // Avoid adding duplicate base file info if somehow loaded again
                         if (!loadedFiles.some(f => f.name === baseFileName)) {
@@ -338,14 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         loadedFiles.forEach(file => {
             const li = document.createElement('li');
-            // Disable remove button for the base file
-            const removeButtonHtml = file.isBaseFile
-                ? `<span style="margin-left: 10px; color: #8A8A8A;">(Base)</span>`
-                : `<span class="remove-file" data-file-id="${file.id}">×</span>`;
-
             li.innerHTML = `
                 ${file.name} (${file.count} items)
-                ${removeButtonHtml}
+                <span class="remove-file" data-file-id="${file.id}">×</span>
             `;
             loadedFilesList.appendChild(li);
         });

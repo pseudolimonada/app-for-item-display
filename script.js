@@ -293,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Papa.parse(file, {
             header: true,
+            delimiter: ";", // Add delimiter parameter
             skipEmptyLines: true,
             complete: function(results) {
                 if (results.errors.length > 0) {

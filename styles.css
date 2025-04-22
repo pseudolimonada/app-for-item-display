@@ -9,6 +9,9 @@ body {
     background-color: #0A1428;
     color: #F0E6D2;
     padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -510,7 +513,7 @@ h1 {
     object-fit: cover; /* Crop to fit container */
 }
 
-.detail-section {
+detail-section {
     width: 100%;
     margin-bottom: 20px;
     position: relative;
@@ -848,6 +851,19 @@ detail-section:not(:last-child)::after {
     resize: vertical;
     min-height: 80px;
     line-height: 1.5;
+}
+
+/* Footer styles */
+.app-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+    color: #785A28;
+    font-size: 0.8rem;
+}
+
+.version-number {
+    opacity: 0.8;
 }
 
 /* Responsive adjustments */

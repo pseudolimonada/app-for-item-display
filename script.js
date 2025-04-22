@@ -551,10 +551,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const csv = Papa.unparse(csvData, {
                 columns: headers,
-                header: true
+                header: true,
+                delimiter: ";",
+                quotes: true, // Always quote fields
+                quoteChar: '"',
+                escapeChar: '"', // Escape quotes by doubling them
+                encoding: "utf-8"
             });
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' }); // Add BOM for Excel
 
             if (typeof saveAs === 'function') {
                 saveAs(blob, 'exported_items.csv');
